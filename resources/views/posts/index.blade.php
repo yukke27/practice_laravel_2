@@ -17,7 +17,8 @@
                     <p class='body'>{{ $post->body }}.</p>
                 </div>
             @endforeach
-        </div>
+        </div class='create'>
+            <a href='/posts/create'>投稿を作成</a>
         </div>
         <div class='paginate'>
             {{ $posts->links() }}
