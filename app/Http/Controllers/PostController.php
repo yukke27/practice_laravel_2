@@ -33,7 +33,7 @@ class PostController extends Controller
 		//インスタンス化するタイミングでバリデーションが検証される
 		//この時点でバリデーションエラーがある場合は処理が中断
 		$input = $request['post'];
-		//postをキーに持つリクエストパラメータを取得し、$inputに代入
+		//リクエストからpostをキーに持つデータを取得し、$inputに代入
 		//ここではtitleとbodyを要素に持つ配列形式
 		//つまり$inputは['title' => 'タイトル', 'body' => '本文']となる
 		$post->fill($input)->save();
@@ -47,5 +47,11 @@ class PostController extends Controller
 	public function edit(Post $post)
 	{
 		return view('posts/edit') ->with(['post' => $post ]);
+	}
+	public function update(PostRequest $request, Post $post)
+	{
+		$input = $request['post'];
+		$post->fill($input)->save();
+		return redirect('/posts/' . $post->id);
 	}
 }
