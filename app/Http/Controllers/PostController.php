@@ -19,7 +19,10 @@ class PostController extends Controller
 	}
 	public function show(Post $post)
 	{
+		//ルートパラメータの文字列と引数の変数名を一致させる
+		//URLパラメータのpostIDと一致するPostモデルのインスタンスが生成される（暗黙の結合）
 		return view('posts.show')->with(['post' => $post]);
+		//postはビュー内で使う変数で中身は暗黙の結合によって生成されたインスタンス
 	}
 	public function create()
 	{
@@ -40,5 +43,9 @@ class PostController extends Controller
 		return redirect('/posts/' . $post->id);
 		//DBへの追加の時点で自動的にIDが採番されている
 		//文字列結合している
+	}
+	public function edit(Post $post)
+	{
+		return view('posts/edit') ->with(['post' => $post ]);
 	}
 }
