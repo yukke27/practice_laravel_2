@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PostRequest;
 use App\Models\Post;
+use App\Models\Category;
 
 class PostController extends Controller
 {
@@ -13,20 +14,23 @@ class PostController extends Controller
 		//クラス型の引数を定義すると、自動的にそのクラスのインスタンスを生成しメソッドに渡す（依存性注入）
 		//この時点で$postはPostクラスの空のインスタンス
 		return view('posts.index') ->with(['posts' => $post->getPaginateByLimit()]);
-		//'posts'という変数名でビューにデータを渡す
-		//$post->getPaginateByLimit() により、ページネーションされた投稿のリストが取得される
-		//postsに取得した結果を渡す
+		//withメソッドでビューと一緒に渡すデータを定義
+		//withメソッドの中身に連想配列を定義することで、ビュー内でキーで値を呼び出せるようになる
+		//$postというPostクラスのインスタンスからgetPaginateByLimit()という関数を呼び出している
 	}
 	public function show(Post $post)
 	{
 		//ルートパラメータの文字列と引数の変数名を一致させる
 		//URLパラメータのpostIDと一致するPostモデルのインスタンスが生成される（暗黙の結合）
 		return view('posts.show')->with(['post' => $post]);
-		//postはビュー内で使う変数で中身は暗黙の結合によって生成されたインスタンス
 	}
-	public function create()
+	public function create(Category $category)
 	{
-		return view('posts.create');
+		//依存注入でCategoryインスタンスが生成される
+		//Categoryインスタンスに対してgetメソッドを呼び出すと
+		//categoriesテーブルからすべてのレコード（Categoryインスタンス）が取得される
+		//結果として、すべてのCategoryインスタンスの集合（コレクション）がビューに渡される
+		return view('posts.create')->with(['categories' => $category->get()]);
 	}
 	public function store(PostRequest $request, Post $post)
 	{
@@ -53,5 +57,10 @@ class PostController extends Controller
 		$input = $request['post'];
 		$post->fill($input)->save();
 		return redirect('/posts/' . $post->id);
+	}
+	public function delete(Post $post)
+	{
+		$post->delete();
+		return redirect('/');
 	}
 }
